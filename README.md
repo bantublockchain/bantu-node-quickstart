@@ -1,9 +1,10 @@
 ### First time only:
 
 ```sh
-
-docker-compose run core new-db > new-db.log
-
+docker-compose pull
+docker-compose up core-postgres
+docker-compose run --rm core new-db > new-db.log
+docker-compose stop core-postgres
 ```
 
 ### Subsequent runs:
