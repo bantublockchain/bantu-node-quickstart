@@ -1,6 +1,7 @@
 ### First time only:
 
 ```sh
+docker-compose down
 docker-compose pull
 docker-compose up core-postgres
 docker-compose run --rm core new-db > new-db.log
