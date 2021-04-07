@@ -26,9 +26,41 @@ services:
     volumes:
       - "./bantu-mainnet.cfg:/blockchain-core.cfg"
       - "./blockchain-data:/blockchain-data"
+  
+  expansion-postgres:
+    image: postgres:9.6.17-alpine
+    restart: on-failure
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=expansion
+      - PGDATA=/tmp
+
+    expose:
+      - "5432"
+    volumes:
+      - "./expansion-db-data:/var/lib/postgresql/data"
+  
+  expansion:
+    image: interstellartech/blockchain-expansion
+    depends_on:
+      - expansion-postgres
+      - core
+    restart: on-failure
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@expansion-postgres:5432/expansion?sslmode=disable
+      - STELLAR_CORE_DATABASE_URL=postgres://postgres:postgres@core-postgres:6432/blockchain-core?sslmode=disable
+      - HISTORY_ARCHIVE_URLS=https://f002.backblazeb2.com/file/bantu-blockchain-archives/bantu-blockchain-mainnet-archiver-1
+      - NETWORK_PASSPHRASE=Public Bantu Network ; 10-10-2020
+      - STELLAR_CORE_URL=http://core:11626
+      - INGEST=true
+      - PER_HOUR_RATE_LIMIT=0
+    command: ["--apply-migrations"]
 
 
 volumes:
   core-db-data:
   blockchain-data:
+  expansion-db-data:
 
