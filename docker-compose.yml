@@ -41,7 +41,7 @@ services:
       - "./expansion-db-data:/var/lib/postgresql/data"
   
   expansion:
-    image: interstellartech/blockchain-expansion
+    image: interstellartech/blockchain-expansion:4
     depends_on:
       - expansion-postgres
       - core
